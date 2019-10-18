@@ -1,0 +1,16 @@
+service: periodic-table
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: dev
+  region: us-west-2
+
+
+functions:
+  getElements:
+    handler: build/functions/elements.getElements
+    events:
+      - http: 
+          path: elements
+          method: get
