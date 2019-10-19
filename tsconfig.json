@@ -4,6 +4,7 @@
         "outDir": "build",
         "rootDir": "src",
         "lib": ["es2018"],
-        "target": "es2018" 
+        "target": "es2018",
+        "module": "commonjs"
     }
 }
