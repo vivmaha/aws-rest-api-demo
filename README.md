@@ -15,6 +15,12 @@ Pre-requisites:
   - Use the `us-west-2` for region
 
 
+# Development
 
+`npm run build` to compile code. 
 
+`npm run lint` to show lint errors.
 
+`npm run lint -- --fix` to fix automatically-fixable lint errors.
+
+The above linters are triggered on every commit, so you don't have to remeber to run them manually.
