@@ -16,6 +16,14 @@ const elements: Element[] = [
   }
 ];
 
+const getErrorResponse = (
+  statusCode: number,
+  message: string
+): APIGatewayProxyResult => ({
+  statusCode,
+  body: JSON.stringify({ message })
+});
+
 export const getElements = async (): Promise<APIGatewayProxyResult> => {
   return {
     statusCode: 200,
@@ -29,10 +37,7 @@ export const getElement = async (
   const parameterName = "id";
   const atomicNumberAsString = event.pathParameters[parameterName];
   if (!atomicNumberAsString) {
-    return {
-      statusCode: 400,
-      body: `Missing [${parameterName}].`
-    };
+    return getErrorResponse(400, `Missing [${parameterName}].`);
   }
   const atomicNumber = Number(atomicNumberAsString);
   if (
@@ -40,20 +45,17 @@ export const getElement = async (
     atomicNumber !== Math.floor(atomicNumber) ||
     atomicNumber < 1
   ) {
-    return {
-      statusCode: 500,
-      body: `[${parameterName}] has to be a positive integer.`
-    };
+    return getErrorResponse(
+      400,
+      `[${parameterName}] has to be a positive integer.`
+    );
   }
 
   const element = elements.find(
     element => element.atomicNumber === atomicNumber
   );
   if (!element) {
-    return {
-      statusCode: 404,
-      body: "Element not found."
-    };
+    return getErrorResponse(404, "Element not found.");
   }
   return {
     statusCode: 200,
