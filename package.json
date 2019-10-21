@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "package": "npm run build & serverless package",
-    "deploy": "npm run build & serverless deploy"
+    "deploy": "npm run build & serverless deploy",
+    "lint": "eslint --ext .js,.ts ."
   },
   "repository": {
     "type": "git",
@@ -19,7 +20,27 @@
   },
   "homepage": "https://github.com/vivmaha/aws-rest-api-demo#readme",
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.33",
+    "@typescript-eslint/eslint-plugin": "^2.4.0",
+    "@typescript-eslint/parser": "^2.4.0",
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "husky": "^3.0.9",
+    "lint-staged": "^9.4.2",
+    "prettier": "^1.18.2",
     "serverless": "^1.54.0",
     "typescript": "^3.6.4"
+  },
+  "lint-staged": {
+    "src/**/*.{js,ts}": [
+      "npm run lint -- --fix",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }

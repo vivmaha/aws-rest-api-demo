@@ -19,3 +19,13 @@ functions:
       - http: 
           path: elements
           method: get
+  getElement:
+    handler: build/functions/elements.getElement
+    events:
+      - http: 
+          path: elements/{id}
+          method: get
+          request:
+            parameters:
+              paths:
+                id: true
