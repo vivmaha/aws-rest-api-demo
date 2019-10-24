@@ -7,6 +7,7 @@ export type Element = {
 };
 
 const tableName = process.env.TABLE_NAME;
+const db = new DynamoDB.DocumentClient();
 
 const dbItemToElement = (item: DocumentClient.AttributeMap): Element => {
   const name = item["name"] as string;
@@ -23,12 +24,24 @@ const dbItemToElement = (item: DocumentClient.AttributeMap): Element => {
 };
 
 export const dbGetElements = async (): Promise<Element[]> => {
-  const db = new DynamoDB.DocumentClient();
   const scanResult = await db.scan({ TableName: tableName }).promise();
   if (scanResult.LastEvaluatedKey) {
     throw new Error("Too many elements, we need to implement paging.");
   }
-  console.log(`Got ${scanResult.Count} items.`);
-  console.log(JSON.stringify(scanResult.Items));
   return scanResult.Items.map(dbItemToElement);
+};
+
+export const dbGetElement = async (
+  atomicNumber: number
+): Promise<Element | undefined> => {
+  const getResult = await db
+    .get({
+      TableName: tableName,
+      Key: { atomicNumber }
+    })
+    .promise();
+  if (!getResult.Item) {
+    return undefined;
+  }
+  return dbItemToElement(getResult.Item);
 };

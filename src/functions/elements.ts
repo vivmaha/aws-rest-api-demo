@@ -1,21 +1,5 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { dbGetElements } from "./elements-db";
-
-type Element = {
-  name: string;
-  atomicNumber: number;
-};
-
-const elements: Element[] = [
-  {
-    name: "Hydrogen",
-    atomicNumber: 1
-  },
-  {
-    name: "Helium",
-    atomicNumber: 2
-  }
-];
+import { dbGetElements, dbGetElement } from "./elements-db";
 
 const getErrorResponse = (
   statusCode: number,
@@ -53,10 +37,8 @@ export const getElement = async (
     );
   }
 
-  const element = elements.find(
-    element => element.atomicNumber === atomicNumber
-  );
-  if (!element) {
+  const element = await dbGetElement(atomicNumber);
+  if (element === undefined) {
     return getErrorResponse(404, "Element not found.");
   }
   return {

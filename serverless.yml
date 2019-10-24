@@ -15,6 +15,7 @@ provider:
   - Effect: Allow
     Action:
       - dynamodb:Scan
+      - dynamodb:GetItem
     Resource: !GetAtt ElementsTable.Arn
 
 resources:
@@ -51,4 +52,6 @@ functions:
             parameters:
               paths:
                 id: true
+    environment:
+      TABLE_NAME: !Ref ElementsTable
 
