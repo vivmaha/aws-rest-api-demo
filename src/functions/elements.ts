@@ -1,4 +1,5 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import { dbGetElements } from "./elements-db";
 
 type Element = {
   name: string;
@@ -25,6 +26,7 @@ const getErrorResponse = (
 });
 
 export const getElements = async (): Promise<APIGatewayProxyResult> => {
+  const elements = await dbGetElements();
   return {
     statusCode: 200,
     body: JSON.stringify(elements)

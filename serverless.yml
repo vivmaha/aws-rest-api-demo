@@ -1,16 +1,36 @@
 service: periodic-table
 
-provider:
-  name: aws
-  runtime: nodejs10.x
-  stage: dev
-  region: us-west-2
-
 package:
   exclude:
     - ./**
   include:
     - ./build/**
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: dev
+  region: us-west-2
+  iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:Scan
+    Resource: !GetAtt ElementsTable.Arn
+
+resources:
+  Resources:
+    ElementsTable: 
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: atomicNumber
+            AttributeType: N
+        KeySchema:
+          - AttributeName: atomicNumber
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
 
 functions:
   getElements:
@@ -19,6 +39,8 @@ functions:
       - http: 
           path: elements
           method: get
+    environment:
+      TABLE_NAME: !Ref ElementsTable
   getElement:
     handler: build/functions/elements.getElement
     events:
@@ -29,3 +51,4 @@ functions:
             parameters:
               paths:
                 id: true
+
